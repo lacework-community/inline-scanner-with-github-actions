@@ -29,16 +29,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-        with:
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Pull Docker image
-        run: docker pull ghcr.io/lacework-community/inline-scanner-with-github-actions:latest
-
+        run: docker pull docker pull ghcr.io/ladykerr/gh-action-demo:latest
       - name: Scan the image
         uses: lacework/lw-scanner-action@v0.7.1
         with:
           LW_ACCOUNT_NAME: ${{ secrets.LW_ACCOUNT_NAME }}
           LW_ACCESS_TOKEN: ${{ secrets.LW_ACCESS_TOKEN }}
-          IMAGE_NAME: ghcr.io/lacework-community/inline-scanner-with-github-actions
+          IMAGE_NAME: docker pull ghcr.io/ladykerr/gh-action-demo
           IMAGE_TAG: latest
