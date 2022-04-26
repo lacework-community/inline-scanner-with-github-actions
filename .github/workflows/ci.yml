@@ -6,15 +6,18 @@ on: [push]
 jobs:
   publish-hello-world-image:
     runs-on: ubuntu-latest
+    permissions:
+      packages: write
 
     steps:
-      - uses: actions/checkout@v2
+     - name: Checkout
+        uses: actions/checkout@v2
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v1
         with:
           registry: ghcr.io
-          username: lacework-community
+          username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build the hello-world Docker image
@@ -27,26 +30,19 @@ jobs:
   test-inline-scanner:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out the repo
+      - name: Checkout
         uses: actions/checkout@v2
-
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v1
         with:
-          registry: ghcr.io
-          username: lacework-community
-          password: ${{ secrets.GITHUB_TOKEN }}
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Pull Docker image
         run: docker pull ghcr.io/lacework-community/inline-scanner-with-github-actions:latest
 
-      - name: lw-scanner
+      - name: Scan the image
         uses: lacework/lw-scanner-action@v0.7.1
         with:
           LW_ACCOUNT_NAME: ${{ secrets.LW_ACCOUNT_NAME }}
           LW_ACCESS_TOKEN: ${{ secrets.LW_ACCESS_TOKEN }}
           IMAGE_NAME: ghcr.io/lacework-community/inline-scanner-with-github-actions
           IMAGE_TAG: latest
-          SAVE_BUILD_REPORT: true
-          BUILD_REPORT_FILE_NAME: report.html
-          FAIL_BUILD: false
+
